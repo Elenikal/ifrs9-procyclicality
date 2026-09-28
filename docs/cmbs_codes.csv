@@ -1,0 +1,180 @@
+element,code,description
+propertyTypeCode,CH,Cooperative housing
+propertyTypeCode,HC,HealthCare
+propertyTypeCode,IN,Industrial
+propertyTypeCode,LO,Lodging
+propertyTypeCode,MF,Multifamily
+propertyTypeCode,MH,Mobile Home Park
+propertyTypeCode,MU,Mixed Use
+propertyTypeCode,OF,Office
+propertyTypeCode,RT,Retail
+propertyTypeCode,SE,Securities
+propertyTypeCode,SS,Self Storage
+propertyTypeCode,WH,Warehouse
+propertyTypeCode,ZZ,Missing Information
+propertyTypeCode,98,Other
+valuationSourceSecuritizationCode,BPO,Broker price opinion
+valuationSourceSecuritizationCode,MAI,Certified MAI appraisal
+valuationSourceSecuritizationCode,MS,"Master servicer estimate, Non-MAI: Non-certified MAI appraisal"
+valuationSourceSecuritizationCode,98,Other
+valuationSourceSecuritizationCode,SS,SS estimate
+mostRecentValuationSourceCode,98,Other
+mostRecentValuationSourceCode,BPO,Broker Price Option
+mostRecentValuationSourceCode,MAI,Certified MAI Appraisal
+mostRecentValuationSourceCode,MS,"Master Servicer Estimate, Non-MAI: Non-certified MAI appraisal"
+mostRecentValuationSourceCode,SS,SS Estimate
+propertyStatusCode,1,In Foreclosure
+propertyStatusCode,2,REO
+propertyStatusCode,3,Defeased
+propertyStatusCode,4,Partial Release
+propertyStatusCode,5,Substituted
+propertyStatusCode,6,Same as at Securitization
+DefeasedStatusCode,F,Full Defeasance
+DefeasedStatusCode,IP,Portion of Loan Previously Defeased
+DefeasedStatusCode,N,No Defeasance Occurred
+DefeasedStatusCode,X,Defeasance Not Allowable
+netOperatingIncomeNetCashFlowSecuritizationCode,CREFC,Calculated using CREFC standard
+netOperatingIncomeNetCashFlowSecuritizationCode,PSA,Calculated using a definition given in the pooling and servicing agreement
+netOperatingIncomeNetCashFlowSecuritizationCode,UW,Calculated using the underwriting method
+netOperatingIncomeNetCashFlowCode,CREFC,Calculated using CREFC Standard
+netOperatingIncomeNetCashFlowCode,PSA,Calculated using a definition given in the pooling and servicing agreement
+netOperatingIncomeNetCashFlowCode,UW,Calculated using the underwriting method
+debtServiceCoverageSecuritizationCode,A,"Average - Not all properties received financials, servicer allocates debt service only to properties where financials are received"
+debtServiceCoverageSecuritizationCode,C,"Consolidated - All properties reported on one ""rolled up"" financial from the borrower"
+debtServiceCoverageSecuritizationCode,F,Full - All Statements Collected for all properties
+debtServiceCoverageSecuritizationCode,N,None Collected - no financial statements were received
+debtServiceCoverageSecuritizationCode,P,"Partial - Not all properties received financials, servicer to leave empty"
+debtServiceCoverageSecuritizationCode,W,"Worst Case - Not all properties received financial statements, servicer allocates 100% of Debt Service to all properties where financials are received"
+mostRecentDebtServiceCoverageCode,A,"Average - Not all properties received financials, servicer allocates debt service only to properties where financial statements are received"
+mostRecentDebtServiceCoverageCode,C,"Consolidated - All properties reported on one ""rolled up"" financial statement from the borrower"
+mostRecentDebtServiceCoverageCode,F,Full - All financial statements collected for all properties
+mostRecentDebtServiceCoverageCode,N,None collected - No financials were received
+mostRecentDebtServiceCoverageCode,P,"Partial - Not all properties received financial statements, servicer to leave empty"
+mostRecentDebtServiceCoverageCode,W,"Worst Case - Not all properties received financial statements, servicer allocates 100% of debt service to all properties where financial statements are received"
+interestAccrualMethodCode,1,30/360
+interestAccrualMethodCode,2,Actual/365
+interestAccrualMethodCode,3,Actual/360
+interestAccrualMethodCode,4,Actual/Actual
+interestAccrualMethodCode,5,Actual/366
+interestAccrualMethodCode,6,Simple
+interestAccrualMethodCode,7,78's
+interestAccrualMethodCode,98,Other
+originalInterestRateTypeCode,1,Fixed
+originalInterestRateTypeCode,2,ARM
+originalInterestRateTypeCode,3,Step
+originalInterestRateTypeCode,4,Other
+lienPositionSecuritizationCode,1,Primary
+lienPositionSecuritizationCode,2,Secondary
+lienPositionSecuritizationCode,3,Tertiary;etc
+lienPositionSecuritizationCode,98,Other
+lienPositionSecuritizationCode,99,Unknown
+loanStructureCode,A1,A Note; A/B Participation Structure
+loanStructureCode,A2,A Note; A/B/C Participation Structure
+loanStructureCode,B1,B Note; A/B Participation Structure
+loanStructureCode,B2,B Note; A/B/C Participation Structure
+loanStructureCode,C2,C Note; A/B/C Participation Structure
+loanStructureCode,MZ,Mezzanine Financing
+loanStructureCode,PP,Participated mortgage loan with pari passu debt outside trust
+loanStructureCode,WL,Whole loan structure
+paymentTypeCode,1,fully Amortizing
+paymentTypeCode,2,amortizing Balloon
+paymentTypeCode,3,Interest Only/Balloon
+paymentTypeCode,4,Interest Only/Amortizing
+paymentTypeCode,5,Interest Only/Amortizing/Balloon
+paymentTypeCode,6,Principal Only
+paymentTypeCode,7,hyper  Amortization
+paymentTypeCode,98,Other
+paymentFrequencyCode,1,monthly
+paymentFrequencyCode,3,quarterly
+paymentFrequencyCode,6,semi-annually
+paymentFrequencyCode,12,annually
+paymentFrequencyCode,365,daily
+armIndexCode,98,Other
+armIndexCode,A,11 FHLB COFI  (1 Month)
+armIndexCode,B,11 FHLB COFI  (6 Month)
+armIndexCode,C,1 Year CMT Weekly Average Treasury
+armIndexCode,D,3 Year CMT Weekly Average Treasury
+armIndexCode,E,5 Year CMT Weekly Average Treasury
+armIndexCode,F,Wall Street Journal Prime Rate
+armIndexCode,G,1 Month LIBOR
+armIndexCode,H,3 Month LIBOR
+armIndexCode,I,6 Month LIBOR
+armIndexCode,J,National Mortgage Index Rate
+armIndexCode,K,30-Day Average SOFR Compounded in Advance
+armIndexCode,L,90-Day Average SOFR Compounded in Advance
+armIndexCode,M,180-Day Average SOFR Compounded in Advance
+armIndexCode,N,30-Day Average SOFR Compounded in Arrears
+armIndexCode,O,90-Day Average SOFR Compounded in Arrears
+armIndexCode,P,180-Day Average SOFR Compounded in Arrears
+armIndexCode,Q,1-Month Term SOFR
+armIndexCode,R,3-Month Term SOFR
+armIndexCode,S,6-Month Term SOFR
+rateResetFrequencyCode,1,Monthly
+rateResetFrequencyCode,3,Quarterly
+rateResetFrequencyCode,6,Semi-Annually
+rateResetFrequencyCode,12,Annually
+rateResetFrequencyCode,365,Daily
+paymentResetFrequencyCode,1,Monthly
+paymentResetFrequencyCode,3,Quarterly
+paymentResetFrequencyCode,6,Semi-Annually
+paymentResetFrequencyCode,12,Annually
+paymentResetFrequencyCode,365,Daily
+servicingAdvanceMethodCode,1,"Scheduled Interest, Scheduled Principal"
+servicingAdvanceMethodCode,2,"Actual Interest, Actual Principal"
+servicingAdvanceMethodCode,3,"Scheduled Interest, Actual Principal"
+servicingAdvanceMethodCode,98,Other
+servicingAdvanceMethodCode,99,Unknown
+paymentStatusLoanCode,0,Current
+paymentStatusLoanCode,1,30-59 days delinquent
+paymentStatusLoanCode,2,60-89 days delinquent
+paymentStatusLoanCode,3,90+ days delinquent
+paymentStatusLoanCode,4,Performing matured balloon
+paymentStatusLoanCode,5,Non performing matured balloon
+paymentStatusLoanCode,A,Payment not received but still in grace period or not yet due
+paymentStatusLoanCode,B,Late payment but less than 30 days delinquent
+assetSubjectDemandStatusCode,0,Asset Pending Repurchase or Replacement (within cure period)
+assetSubjectDemandStatusCode,1,Asset was Repurchased or Replaced
+assetSubjectDemandStatusCode,2,Demand in Dispute
+assetSubjectDemandStatusCode,3,Demand Withdrawn
+assetSubjectDemandStatusCode,4,Demand Rejected
+repurchaseReplacementReasonCode,1,Fraud
+repurchaseReplacementReasonCode,2,Early Payment Default
+repurchaseReplacementReasonCode,3,Other recourse obligation
+repurchaseReplacementReasonCode,4,Reps/Warrants breach
+repurchaseReplacementReasonCode,5,Servicer breach
+repurchaseReplacementReasonCode,98,Other
+repurchaseReplacementReasonCode,99,Unknown
+liquidationPrepaymentCode,1,Partial liquidation(Curtailment)
+liquidationPrepaymentCode,2,Payoff Prior to Maturity
+liquidationPrepaymentCode,3,Disposition/Liquidation
+liquidationPrepaymentCode,4,Repurchase/Substitution
+liquidationPrepaymentCode,5,Full Payoff at Maturity
+liquidationPrepaymentCode,6,DPO
+liquidationPrepaymentCode,7,Liquidated-only for use for loans liquidated prior to 7/1/2006
+liquidationPrepaymentCode,8,Payoff w/ Penalty
+liquidationPrepaymentCode,9,Payoff w/ Yield Maintenance
+liquidationPrepaymentCode,10,Curtailment w/ Penalty
+liquidationPrepaymentCode,11,Curtailment w/ Yield Maintenance
+workoutStrategyCode,1,Modification
+workoutStrategyCode,2,Foreclosure
+workoutStrategyCode,3,Bankruptcy
+workoutStrategyCode,4,Extension
+workoutStrategyCode,5,Note sale
+workoutStrategyCode,6,DPO
+workoutStrategyCode,7,REO
+workoutStrategyCode,8,Resolved
+workoutStrategyCode,9,Pending return to master servicer
+workoutStrategyCode,10,Deed-in-lieu of Foreclosure
+workoutStrategyCode,11,Full Payoff
+workoutStrategyCode,12,Reps and Warranties
+workoutStrategyCode,13,TBD
+workoutStrategyCode,98,Other
+modificationCode,1,Maturity Date Extension
+modificationCode,2,Amortization Change
+modificationCode,3,Principal Write-off
+modificationCode,5,Temporary Rate Reduction
+modificationCode,6,Capitalization on Interest
+modificationCode,7,Capitalization on Taxes
+modificationCode,8,Combination
+modificationCode,10,Forbearance
+modificationCode,98,Other

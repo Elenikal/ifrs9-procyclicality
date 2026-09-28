@@ -1,0 +1,4 @@
+arm,trough,peak,total_change,migration_first,within_stage_first,migration_share_lo,migration_share_hi
+pit_gbm,2023-11-01,2026-02-01,0.005,0.002,0.002,0.533,0.558
+pit_logit,2023-12-01,2025-12-01,0.006,0.002,0.003,0.426,0.448
+ttc_logit,2023-11-01,2026-08-01,0.003,0.003,0.001,0.756,0.809

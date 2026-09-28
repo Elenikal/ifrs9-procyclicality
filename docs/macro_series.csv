@@ -1,0 +1,28 @@
+series_id,geo,block,transform,note
+UNRATE,US,labour,rate,Unemployment rate
+PAYEMS,US,labour,index,Total nonfarm payrolls
+USLAH,US,sector,index,Leisure and hospitality employment (lodging)
+CES7072100001,US,sector,index,Accommodation employment (lodging)
+USTRADE,US,sector,index,Retail trade employment (retail)
+CES6054000001,US,sector,index,"Professional, scientific, technical services employment (office)"
+USFIRE,US,sector,index,Financial activities employment (office)
+INDPRO,US,activity,index,Industrial production (industrial)
+RSAFS,US,activity,index,Retail and food services sales (retail)
+CPIAUCSL,US,prices,index,CPI all items
+PCU531120531120,US,prices,index,PPI lessors of nonresidential buildings (rents)
+PCU721110721110,US,prices,index,"PPI hotels and motels (room rates, lodging)"
+FEDFUNDS,US,rates,rate,Effective fed funds rate
+GS2,US,rates,rate,2-year Treasury yield
+GS10,US,rates,rate,10-year Treasury yield
+MORTGAGE30US,US,rates,rate,30-year fixed mortgage rate (weekly)
+BAA10Y,US,rates,rate,Baa corporate minus 10-year Treasury spread (daily)
+NFCI,US,financial,rate,Chicago Fed National Financial Conditions Index (weekly)
+BOGZ1FL075035503Q,US,cre,index,Fed Z.1 CRE price index (vintages from 2019-03)
+COMREPUSQ159N,US,cre,rate,BIS CRE prices yoy % (vintages from 2011; ends 2025Q2)
+DRCRELEXFACBS,US,cre,rate,Bank CRE loan delinquency rate
+SUBLPDRCSN,US,cre,rate,SLOOS net % tightening: CRE nonfarm nonresidential
+SUBLPDRCSM,US,cre,rate,SLOOS net % tightening: CRE multifamily
+SUBLPDRCSC,US,cre,rate,SLOOS net % tightening: CRE construction and land
+{ST}UR,state,labour,rate,State unemployment rate
+{ST}NA,state,labour,index,State nonfarm payrolls
+{ST}STHPI,state,prices,index,FHFA all-transactions state house price index

@@ -1,0 +1,18 @@
+# data is public at source and never committed here
+data/
+*.parquet
+*.duckdb
+*.zip
+.env
+
+# build artefacts
+__pycache__/
+.ipynb_checkpoints/
+.DS_Store
+.venv/
+paper/*.aux
+paper/*.log
+paper/*.out
+paper/*.bbl
+paper/*.blg
+paper/*.pdf

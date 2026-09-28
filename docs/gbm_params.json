@@ -1,0 +1,17 @@
+{
+  "params": {
+    "learning_rate": 0.05,
+    "max_leaf_nodes": 31,
+    "min_samples_leaf": 200,
+    "l2_regularization": 1.0,
+    "max_iter": 200
+  },
+  "tuned_on": {
+    "train_label_known_max": "2021-11-01",
+    "valid_label_known_max": "2022-05-01"
+  },
+  "validation": {
+    "logloss": 0.07854,
+    "auc": 0.92
+  }
+}

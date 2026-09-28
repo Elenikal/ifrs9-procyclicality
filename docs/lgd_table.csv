@@ -1,0 +1,13 @@
+table,type,group,n,raw_lgd,lgd
+headline_resolved,at_maturity,LO_RT_OF_MU,61,0.0128,0.0119
+headline_resolved,at_maturity,other,21,0.0,0.0046
+headline_resolved,in_term,LO_RT_OF_MU,446,0.1157,0.1157
+headline_resolved,in_term,other,71,0.1166,0.1164
+headline_resolved,at_maturity,all,82,0.0095,0.0095
+headline_resolved,in_term,all,517,0.1158,0.1158
+bound_with_open,at_maturity,LO_RT_OF_MU,127,0.0681,0.0662
+bound_with_open,at_maturity,other,34,0.0024,0.0216
+bound_with_open,in_term,LO_RT_OF_MU,735,0.1467,0.1467
+bound_with_open,in_term,other,206,0.1481,0.148
+bound_with_open,at_maturity,all,161,0.0542,0.0542
+bound_with_open,in_term,all,941,0.147,0.147
