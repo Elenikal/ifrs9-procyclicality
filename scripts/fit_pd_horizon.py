@@ -28,6 +28,19 @@ FIRST_REFIT, NEG_SAMPLE, SEED, K_PRED = "2019-01-01", 0.3, 7, 10
 # revert to their training-sample mean (standardised value 0). Without this, lifetime PD is maturity-year default
 # under today's rates projected up to a decade ahead.
 RS_YEARS = 2
+
+# IFRS 9 requires a probability-weighted view rather than a single path. Scenarios are applied as shifts to the
+# macro inputs at the forecast date, in each series' own units, and are then clipped to the training range like
+# any other input. Magnitudes are stylised: a moderate recession and a mild expansion.
+SCENARIOS = {
+    "dn": {"UNRATE_level": 1.5, "UNRATE_yoy": 1.5, "st_UR_level": 1.5, "st_UR_yoy": 1.5,
+           "cre_price_yoy": -10.0, "sector_emp_yoy": -3.0, "sector_price_yoy": -3.0,
+           "BAA10Y_level": 1.0, "NFCI_level": 0.5, "st_STHPI_yoy": -5.0, "st_NA_yoy": -2.0},
+    "up": {"UNRATE_level": -0.5, "UNRATE_yoy": -0.5, "st_UR_level": -0.5, "st_UR_yoy": -0.5,
+           "cre_price_yoy": 4.0, "sector_emp_yoy": 1.0, "sector_price_yoy": 1.0,
+           "BAA10Y_level": -0.3, "NFCI_level": -0.2, "st_STHPI_yoy": 2.0, "st_NA_yoy": 1.0},
+}
+SCENARIO_WEIGHTS = {"base": 0.5, "dn": 0.3, "up": 0.2}
 LOAN = ["rate", "log_orig_amt", "full_io", "multi_property", "pari_passu_notes", "building_age", "occ_sec", "dscr_sec",
         "ltv_sec", "occ_recent", "dscr_recent", "ltv_current", "reappraised", "dq30", "dq60", "matured_performing",
         "in_special_servicing", "modified", "defeased", "lockout"]
@@ -61,7 +74,12 @@ def window_features(d, k):
                     k2=(np.minimum(k, 3) == 2).astype(float), k3=(np.minimum(k, 3) == 3).astype(float))
 
 
-def design(d, cols, stats=None, revert_macro=False):
+def design(d, cols, stats=None, revert_macro=False, scenario=None):
+    if scenario:
+        d = d.copy()
+        for c, shift in SCENARIOS[scenario].items():
+            if c in d.columns:
+                d[c] = d[c] + shift
     X = pd.get_dummies(d[cols + WINDOW + ["ptype"]], columns=["ptype"], dtype=float).drop(columns="ptype_OT", errors="ignore")
     if stats is None:
         med = X.median()
@@ -115,6 +133,7 @@ def main(arm):
     h = window_features(h, h.k)
     h["draw"] = np.random.default_rng(draw_seed).random(len(h))
     out, shifts, origin_out = [], [], []
+    scn = {k: [] for k in SCENARIOS}
     origin = panel.sort_values("period").groupby("loan_id").first().assign(
         period=panel.sort_values("period").groupby("loan_id").period.first())
     realised = panel[panel.outcome == 1].groupby("loan_id").agg(dper=("period", "min"), mat=("default_at_maturity", "max"))
@@ -128,14 +147,16 @@ def main(arm):
         cls = list(m.classes_)
         shifts.append(holdout_calibration(h, panel, cols, make, R, realised))
         n_years = np.clip(np.ceil((te.months_to_maturity.to_numpy() + 1) / 12), 1, K_PRED)
-        res = {"loan_id": te.loan_id.values, "period": te.period.values, "refit": R}
-        for k in range(1, K_PRED + 1):
-            p = m.predict_proba(design(window_features(te, np.full(len(te), k)), cols, stats, revert_macro=k > RS_YEARS)[0])
-            live = k <= n_years
-            col = lambda c: p[:, cls.index(c)] if c in cls else np.zeros(len(te))
-            for name, c in (("term", 1), ("pay", 2), ("mat", 3)):
-                res[f"q_{name}_{k}"] = np.where(live, col(c), np.nan).astype(np.float32)
-        out.append(pd.DataFrame(res))
+        for scenario in (None,) + tuple(SCENARIOS):   # base path, then the weighted-scenario variants
+            res = {"loan_id": te.loan_id.values, "period": te.period.values, "refit": R}
+            for k in range(1, K_PRED + 1):
+                p = m.predict_proba(design(window_features(te, np.full(len(te), k)), cols, stats,
+                                           revert_macro=k > RS_YEARS, scenario=scenario)[0])
+                live = k <= n_years
+                col = lambda c: p[:, cls.index(c)] if c in cls else np.zeros(len(te))
+                for name, c in (("term", 1), ("pay", 2), ("mat", 3)):
+                    res[f"q_{name}_{k}"] = np.where(live, col(c), np.nan).astype(np.float32)
+            (out if scenario is None else scn[scenario]).append(pd.DataFrame(res))
         og = origin.loc[origin.index.intersection(te.loan_id.unique())]
         ores = {"loan_id": og.index.values, "refit": R, "origin_period": og.period.values}
         for k in range(1, K_PRED + 1):
@@ -162,6 +183,9 @@ def main(arm):
     o.to_parquet(f"data/interim/pd_horizon_{arm}{VARIANT}.parquet", index=False)
     pd.DataFrame(shifts).assign(arm=arm).to_csv(f"data/interim/pd_holdout_{arm}{VARIANT}.csv", index=False)
     pd.concat(origin_out, ignore_index=True).to_parquet(f"data/interim/pd_origin_{arm}{VARIANT}.parquet", index=False)
+    for name, frames in scn.items():
+        if frames:
+            pd.concat(frames, ignore_index=True).to_parquet(f"data/interim/pd_scn{name}_{arm}{VARIANT}.parquet", index=False)
 
 
 if __name__ == "__main__":

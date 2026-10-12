@@ -80,6 +80,14 @@ def residual_benchmark(d, arm, source="horizon"):
 
 def ecl_for_arm(arm, lm, lgd_term, lgd_mat, at_maturity_type, sicr_mult=SICR_MULT, source="horizon"):
     p = pd.read_parquet(f"data/interim/pd_{source}_{arm}{VARIANT}.parquet")
+    if "pd_life" not in p.columns:   # scenario files hold only the conditional curves
+        surv = np.ones(len(p))
+        life = np.zeros(len(p))
+        for k in range(1, K_PRED + 1):
+            qt, qm, qp = (p[f"q_{n}_{k}"].fillna(0).to_numpy() for n in ("term", "mat", "pay"))
+            life += surv * (qt + qm)
+            surv *= np.clip(1 - qt - qm - qp, 0, 1)
+        p["pd12"], p["pd_life"] = p.q_term_1 + p.q_mat_1, life.astype(np.float32)
     d = lm.merge(p, on=["loan_id", "period"], how="left")
     surv = np.ones(len(d))
     life = np.zeros(len(d))
@@ -107,12 +115,35 @@ def ecl_for_arm(arm, lm, lgd_term, lgd_mat, at_maturity_type, sicr_mult=SICR_MUL
               "ecl_rate_12m", "ecl_rate_life", "ecl_ifrs9", "ecl_cecl"]]
 
 
-def main(arms=ARMS, lgd_which="headline_resolved", sicr_mult=SICR_MULT, source="horizon", suffix=""):
+def main(arms=ARMS, lgd_which="headline_resolved", sicr_mult=SICR_MULT, source="horizon", suffix="", weighted=False):
+    """weighted=True replaces the single macro path with the probability-weighted scenarios that IFRS 9 intends:
+    ECL is computed under each scenario and averaged with SCENARIO_WEIGHTS, staging included, so both the
+    provision and the stage allocation are probability-weighted rather than conditional on one path."""
     lgd_term, lgd_mat = lgd_table(lgd_which)
     lm = loan_state()
     panel = pd.read_parquet(f"data/interim/model_panel{VARIANT}.parquet", columns=["loan_id", "period", "outcome", "default_at_maturity"])
     at_maturity_type = panel[panel.outcome == 1].groupby("loan_id").default_at_maturity.max()
-    out = pd.concat([ecl_for_arm(a, lm, lgd_term, lgd_mat, at_maturity_type, float(sicr_mult), source) for a in arms], ignore_index=True)
+    if weighted:
+        import fit_pd_horizon as F
+        parts = []
+        for tag, w in F.SCENARIO_WEIGHTS.items():
+            src = source if tag == "base" else f"scn{tag}"
+            d = pd.concat([ecl_for_arm(a, lm, lgd_term, lgd_mat, at_maturity_type, float(sicr_mult), src) for a in arms],
+                          ignore_index=True).assign(scenario=tag, weight=w)
+            parts.append(d)
+        allc = pd.concat(parts, ignore_index=True)
+        num = ["ead", "charge_off", "pd12", "pd_life", "ecl_rate_12m", "ecl_rate_life", "ecl_ifrs9", "ecl_cecl"]
+        allc[num] = allc[num].mul(allc.weight, axis=0)
+        g = allc.groupby(["loan_id", "cik", "period", "arm", "ptype"], as_index=False)
+        out = g[num].sum()
+        out["ead"] = out.ead / sum(F.SCENARIO_WEIGHTS.values())     # exposure is common across scenarios
+        out["charge_off"] = out.charge_off / sum(F.SCENARIO_WEIGHTS.values())
+        # weighted stage: the probability-weighted share of exposure in each stage, summarised by the modal stage
+        st = allc.assign(w=allc.weight).groupby(["loan_id", "period", "arm", "stage"]).w.sum().reset_index()
+        st = st.sort_values("w").groupby(["loan_id", "period", "arm"]).tail(1)[["loan_id", "period", "arm", "stage"]]
+        out = out.merge(st, on=["loan_id", "period", "arm"], how="left")
+    else:
+        out = pd.concat([ecl_for_arm(a, lm, lgd_term, lgd_mat, at_maturity_type, float(sicr_mult), source) for a in arms], ignore_index=True)
     out = out[out.period >= "2019-01-01"]
     Path("data/processed").mkdir(exist_ok=True)
     out.to_parquet(f"data/interim/ecl_loan_month{suffix}.parquet", index=False)
