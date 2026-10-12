@@ -67,12 +67,28 @@ conditioning does amplify them: replacing the through-the-cycle logit with a poi
 by $0.85$. Third, conditioning buys what the standard was designed to deliver. The point-in-time models turn six
 to ten months ahead of newly delinquent balances, while the through-the-cycle model does not lead at all.
 
-The contribution is a composition rather than a new method. The procyclicality literature on IFRS 9 works with
-representative portfolios and simulated or aggregate parameters \citep{abad2017cyclical, esrb2017ifrs9}, and does
-not vary the estimator. The literature on machine learning in IFRS 9 estimation works at loan level but evaluates
-models on discrimination and calibration, stopping before the provision path. Neither measures what supervisors
-are actually asking about, which is what happens to the provision when the estimator changes and everything else
-is held fixed. That measurement is what we provide.
+The contribution is a composition rather than a new method, and it sits between three literatures that do not
+meet.
+
+The first asks whether expected-loss provisioning amplifies the cycle. \citet{abad2017cyclical} model a
+representative portfolio of European corporate loans and find that IFRS 9 allowances react sooner and more
+strongly to the cyclical state than the incurred-loss regime did; \citet{kund2023resilience} and
+\citet{fatouh2023cyclicality} reach related conclusions on bank balance-sheet data, and the
+\citet{bcbs2021procyclicality} review surveys the evidence. This work varies the accounting regime, the portfolio
+or the scenario, but holds the estimator fixed: the probability of default is a model input, not the object of
+study.
+
+The second asks what machine learning does in credit. Its concern is predictive performance and its consequences
+for borrowers: \citet{fuster2022unequal}, for instance, show that flexible models change the distribution of
+credit across borrower groups in US mortgage markets. Applications to IFRS 9 estimation are typically evaluated on
+discrimination and calibration, stopping before the provision path that the estimates feed.
+
+The third is the empirical literature on commercial mortgage credit, which supplies the competing-risks structure
+that default and prepayment require and the loan-level evidence on CMBS that motivates our data
+\citep{an2011cmbs}.
+
+Neither of the first two measures what supervisors are actually asking about, which is what happens to the
+provision when the estimator changes and everything else is held fixed. That measurement is what we provide.
 
 \section{Data}
 \label{sec:data}
@@ -98,7 +114,8 @@ defaults, 45 later paid off in full and 35 returned to performing after an exten
 loss. A broader definition based on transfer to the special servicer is reported as a robustness check.
 
 \paragraph{Real-time macroeconomic data.} Every macro input is the vintage that was actually published: for a
-forecast month $t$ we use the ALFRED vintage in force at the end of month $t-1$. This matters here. Revisions are
+forecast month $t$ we use the ALFRED vintage in force at the end of month $t-1$, following the real-time
+forecasting literature \citep{croushore2001realtime}. This matters here. Revisions are
 large for exactly the series a commercial real estate model leans on: mean absolute revision to year-on-year
 growth is 0.42 of the series' own standard deviation for the BIS commercial property price index and 0.27 for the
 Federal Reserve's, against effectively zero for interest rates and unemployment.
@@ -115,7 +132,8 @@ Three probability-of-default arms differ only in functional form and information
 
 All arms are refit quarterly on an expanding window, using only outcomes whose reporting was complete at the refit
 date, and all predict the same object: conditional probabilities of in-term default, at-maturity default and
-payoff in each year of a loan's remaining life. We use direct horizon models rather than a monthly hazard, because
+payoff in each year of a loan's remaining life. Treating payoff as a competing risk rather than as censoring
+follows standard practice in the commercial mortgage literature \citep{an2011cmbs}. We use direct horizon models rather than a monthly hazard, because
 a monthly hazard conditioned on current delinquency concentrates default risk in loans already 60 days late and
 understates the 12-month probability for current loans by a factor of five to ten. Inputs are clipped to the
 training range; without this the PIT logit, trained on 2017--2019, predicted 9{,}174 defaults for 2020 against 366
@@ -182,6 +200,48 @@ larger swing.
   \caption{Share of exposure in Stage 2.}
   \label{fig:stage2}
 \end{figure}
+
+\paragraph{Why the flexible model is less cyclical.} IFRS 9 asks for a probability-weighted view rather than a
+single macroeconomic path, so we re-score every arm at each forecast date under a stylised downside (unemployment
+1.5 points higher, commercial property prices 10 points lower year on year, credit spreads 100 basis points wider,
+with matching state-level shifts) and a milder upside, and weight the resulting provisions 0.5, 0.3 and 0.2.
+
+Two things follow. First, weighting changes almost nothing: the paired difference between the point-in-time arms
+becomes $-0.29$ $[-0.46, -0.12]$ against $-0.26$ $[-0.44, -0.09]$ on the single path, and Stage 2 shares move by
+less than a tenth of a percentage point. The result does not depend on the single-path simplification.
+
+Second, and more informative, the scenarios expose the mechanism (Table~\ref{tab:sensitivity}). Given the same
+macroeconomic inputs and the same shock, the point-in-time logit's mean 12-month probability of default rises by
+19.6 per cent in the downside and falls by 16.3 per cent in the upside. The gradient boosting arm barely moves:
+0.6 per cent up and 3.2 per cent down. The through-the-cycle logit does not move at all, which is correct by
+construction since it has no macroeconomic inputs.
+
+\begin{table}[b]\centering
+  \caption{Mean 12-month probability of default under stylised macroeconomic scenarios, evaluation window.}
+  \label{tab:sensitivity}
+  \input{tables/scenario_sensitivity}
+\end{table}
+
+This is the result restated at the level of the model rather than the provision. Boosted trees partition on the
+features that separate loans, and in this portfolio those are loan-level: leverage, coverage, occupancy,
+delinquency. Macroeconomic variables enter with few effectively independent observations, because a decade
+supplies only a handful of distinct cyclical states however many loans are observed, and a piecewise-constant
+predictor can leave a moderate shift entirely inside the same leaf. A logit has no such freedom: it is told the
+relationship is monotone in the macro inputs and extrapolates a response from the same thin time-series variation.
+The flexible model is not damping the cycle deliberately; it is declining to learn a macroeconomic response that
+the linear model is required to assume. Whether that is prudent or negligent depends on whether the assumed
+response is right, which one downturn cannot settle.
+
+\paragraph{Are these provisions plausible?} The provisions here are simulated: no bank booked them, and the
+loans sit in securitisation trusts rather than on a balance sheet. A minimum test is whether the staging they
+produce resembles what banks report on comparable exposures. It does. Supervisory data for euro area significant
+institutions put the Stage 2 ratio for commercial real estate portfolios at 17.8 per cent, down 1.74 percentage
+points over the year \citep{ecb2025annual}. Within our evaluation window the gradient boosting arm holds 17.0 per
+cent of exposure in Stage 2, the point-in-time logit 5.9 per cent and the through-the-cycle logit 5.4 per cent.
+The flexible model therefore lands almost exactly on the reported CRE figure, while both logits look low against
+it, and all three are in the region of the roughly 9 per cent Stage 2 share reported across all loan types. This
+does not validate the level of any arm, since portfolio composition and bank-specific thresholds differ, but it
+does rule out the possibility that the staging machinery here produces figures unlike anything in practice.
 
 \section{Robustness}
 \label{sec:robustness}

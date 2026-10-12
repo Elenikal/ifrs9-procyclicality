@@ -1,0 +1,29 @@
+[
+  {
+    "arm": "pit_gbm",
+    "label": "Gradient boosting (PIT)",
+    "base_pd12": 1.431,
+    "pd12_dn": 1.439,
+    "ratio_dn": 1.006,
+    "pd12_up": 1.385,
+    "ratio_up": 0.968
+  },
+  {
+    "arm": "pit_logit",
+    "label": "Logit (PIT)",
+    "base_pd12": 1.811,
+    "pd12_dn": 2.166,
+    "ratio_dn": 1.196,
+    "pd12_up": 1.516,
+    "ratio_up": 0.837
+  },
+  {
+    "arm": "ttc_logit",
+    "label": "Logit (TTC)",
+    "base_pd12": 2.419,
+    "pd12_dn": 2.419,
+    "ratio_dn": 1.0,
+    "pd12_up": 2.419,
+    "ratio_up": 1.0
+  }
+]
